@@ -1,8 +1,28 @@
+require('dotenv/config');
 const express = require('express');
 const app = express();
 const morgan = require('morgan')
+const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-require('dotenv/config');
+const cors = require('cors')
+
+//middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(morgan('tiny'));
+app.use(cors());
+app.options('*',  cors());
+
+const api = process.env.API_URL
+const productsRouter = require('./routes/product');
+const categoryRouter = require('./routes/categories');
+
+
+//routes
+app.use(`${api}/products`,productsRouter);
+app.use(`${api}/category`,categoryRouter);
+
+
 
 
 mongoose.connect(process.env.CONNECTION_STRING, {
@@ -17,7 +37,8 @@ mongoose.connect(process.env.CONNECTION_STRING, {
         console.log(e)
     })
 
-app.use(morgan('tiny'));
+
+
 
 
 
